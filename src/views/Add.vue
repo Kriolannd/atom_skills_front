@@ -2,97 +2,20 @@
 import { ref, onMounted } from "vue";
 import Card from 'primevue/card';
 import Button from "primevue/button";
-import type { ICardData } from '@/interfaces/submit';
+import type { ITopicCard } from '@/interfaces/submit';
 import { useRouter, type Router } from 'vue-router';
 import Menubar from 'primevue/menubar';
 import InputText from 'primevue/inputtext';
 import { FilterMatchMode } from "primevue/api";
+import { getAllTopics } from "../services/topicService"
 
-const cardData = ref<ICardData[]>([
-    {
-        title: "Advanced Card",
-        traits: [""],
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam!"
-    },
-    {
-        title: "Advanced Card",
-        traits: [""],
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam!"
-    },
-    {
-        title: "Advanced Card",
-        traits: [""],
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam!"
-    },
-    {
-        title: "Advanced Card",
-        traits: [""],
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam!"
-    },
-    {
-        title: "Advanced Card",
-        traits: [""],
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam!"
-    },
-    {
-        title: "Advanced Card",
-        traits: [""],
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam!"
-    },
-    {
-        title: "Advanced Card",
-        traits: [""],
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam!"
-    },
-    {
-        title: "Advanced Card",
-        traits: [""],
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam!"
-    },
-    {
-        title: "Advanced Card",
-        traits: [""],
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam!"
-    },
-    {
-        title: "Advanced Card",
-        traits: [""],
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam!"
-    },
-    {
-        title: "Advanced Card",
-        traits: [""],
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam!"
-    },
-    {
-        title: "Advanced Card",
-        traits: [""],
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam!"
-    },
-    {
-        title: "Advanced Card",
-        traits: [""],
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam!"
-    },
-    {
-        title: "Advanced Card",
-        traits: [""],
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam!"
-    },
-    {
-        title: "Advanced Card",
-        traits: [""],
-        description: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Inventore sed consequuntur error repudiandae numquam deserunt quisquam!"
-    }
-
-]);
+const cardData = ref<ICardData[]>([]);
 
 const router = useRouter();
 
-const redirect = (path: string): void => {
+const redirectToTask = (code: string): void => {
     try {
-        console.log(router);
-        router.push({ name: path }); 
+        router.push({name: "task", params: {code: code}}); 
     } catch (error) {
         console.error(error);
     }
@@ -151,12 +74,19 @@ const items = ref([
 
 let searchText = "";
 
-let filterCards: ICardData[] = []
+let filterCards: ITopicCard[] = []
 
-const filteredCardData = (): ICardData[] => {
+const filteredCardData = (): ITopicCard[] => {
     filterCards = cardData.value.filter(card => card.title.toLowerCase().includes(searchText.toLowerCase()))
     return filterCards
 }
+
+onMounted(() => {
+    getAllTopics().then(response => {
+        console.log(response.data)
+        cardData.value = response.data
+    })
+})
  
 
 // const filteredCardData = (): ICardData[] => {
@@ -171,37 +101,28 @@ const filteredCardData = (): ICardData[] => {
 </script>
 
 <template>
-    <div class="card add-card">
-        <Menubar :model="items">
-            <template #end>
-                <div class="flex items-center gap-2">
-                    <InputText placeholder="Search" type="text" class="w-[8rem] sm:w-auto" v-model="searchText" @input="filteredCardData()"/>
-                </div>
-            </template>
-        </Menubar>
-    </div>
     <div class="container">
         <!-- <Card style="width: 25rem; overflow: hidden" v-for="data in filteredCardData">
 
         </Card> -->
 
-        <Card style="width: 25rem; overflow: hidden" v-for="data in filteredCardData()">
-        <!-- <template #header>
-            <img alt="user header" class="img" :src="data.image" />
-        </template> -->
-        <template #title>{{ data.title }}</template>
-        <!-- <template #subtitle> {{ data.subtitle }}</template> -->
-        <template #content>
-            <p class="m-0">
-                {{ data.description }}
-            </p>
-        </template>
-        <template #footer>
-            <div class="flex gap-4 mt-1">
-                <Button label="Cancel" severity="secondary" outlined class="w-full" />
-                <Button label="Save" class="w-full" @click="redirect('task')" />
-            </div>
-        </template>
+        <Card style="width: 25rem; overflow: hidden" v-for="data of cardData">
+            <!-- <template #header>
+                <img alt="user header" class="img" :src="data.image" />
+            </template> -->
+            <template #title>{{ data.title }}</template>
+            <!-- <template #subtitle> {{ data.subtitle }}</template> -->
+            <template #content>
+                <p class="m-0">
+                    {{ data.description }}
+                </p>
+            </template>
+            <template #footer>
+                <div class="flex gap-4 mt-1">
+                    <Button label="Cancel" severity="secondary" outlined class="w-full" />
+                    <Button label="Save" class="w-full" @click="redirectToTask(data.code)" />
+                </div>
+            </template>
         </Card>
     </div>
 </template>

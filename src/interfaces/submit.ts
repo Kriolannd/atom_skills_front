@@ -30,7 +30,7 @@ export interface ISomeEntity {
     file: string
 }
 
-export interface ICardData {
+export interface ITopicCard {
     title: string,
     traits: string[],
     description: string
