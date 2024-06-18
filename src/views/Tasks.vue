@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import InputText from 'primevue/inputtext';
 import InputNumber from 'primevue/inputnumber';
+import Button from 'primevue/button';
 
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
@@ -11,75 +12,8 @@ import {useRouter} from "vue-router";
 import Rating from 'primevue/rating';
 import { getAllTasks } from "../services/taskService"
 
-const toast = useToast();
 
 const router = useRouter()
-
-const onUpload = () => {
-    toast.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000 });
-    console.log(fileupload);
-};
-
-const fileupload = ref();
-
-const displayDialog = ref(false);
-
-interface MenuItem {
-  label: string;
-  icon: string;
-}
-
-const someData = ref<ISomeData>({
-    text: "",
-    number: 0,
-    date: new Date(),
-    someEnum: SomeEnum.FIRST,
-    file: ""
-});
-
-let someEntityData = ref<ISomeEntity[]>([{
-    id: 0,
-    text: "",
-    number: 0,
-    date: new Date(),
-    someEnum: SomeEnum.FIRST,
-    file: ""
-}]);
-
-
-const itemss = ref<MenuItem[]>([
-    { label: 'Send Data', icon: PrimeIcons.SEND },
-]);
-
-const someDataRequest = () => {
-  saveEntityForm({ ...someData.value, file: fileupload.value.files[0] }).then(
-    response => {
-      console.log(response);
-    }
-  ).catch(
-    error => {
-      console.log(error);
-      eventBus.emit('toast', { severity: Severity.ERROR, summary: 'Ошибка отправки данных', detail: 'Неправильно заполнены поля', life: 3000 });
-    }
-  )
-}
-
-const someEntityRequest = () => {
-  getAll().then(
-    response => {
-      console.log(response)
-      someEntityData = response.data;
-      console.log(someEntityData);
-    }
-  ).catch(
-    error => {
-      console.log(error)
-      eventBus.emit('toast', { severity: Severity.ERROR, summary: 'Ошибка получения данных', detail: 'Неправильно ролучены данные', life: 3000 });
-    }
-  )
-}
-
-
 
 const tasks = ref();
 const filters = ref({
@@ -91,9 +25,10 @@ const filters = ref({
 
 const loading = ref(true);
 
-const selectedProduct = ref();
+const selectedTask = ref();
 const onRowSelect = () => {
-    console.log(selectedProduct)
+    console.log(selectedTask)
+    router.push({name: "task", params: { code: selectedTask.value.code }})
 };
 
 onMounted(() => {

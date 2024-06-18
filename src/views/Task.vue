@@ -59,9 +59,6 @@ const someTaskRequest = () => {
     //   console.log(response)
       someTaskData.value = response.data;
     //   console.log(response.data);
-      originalStr = response.data.content;
-        console.log(originalStr)
-        console.log(originalStr.replaceAll('<br>', '\n'))
     }
   ).catch(
     error => {
@@ -94,9 +91,8 @@ const formatSize = (bytes) => {
 
 const files = ref([])
 const onAdvancedUpload = (event) => {
-    console.log(event)
     files.value = event.files
-    console.log(files)
+    console.log(files.value)
 };
 
 </script>
@@ -154,7 +150,7 @@ const onAdvancedUpload = (event) => {
             </div>
             <div class="article-card">
                 <ScrollPanel style="width: 100%; height: 100%">
-                    <div id="md" v-html="marked.parse(someTaskData.content.replaceAll('<br>', '\n'))"></div>
+                    <div v-html="marked.parse(someTaskData.content.replaceAll('<br>', '\n'))"></div>
                     <!-- <div id="md" v-html="marked.parse(originalStr)"></div> -->
                 </ScrollPanel>
             </div>
@@ -196,6 +192,7 @@ const onAdvancedUpload = (event) => {
                     </div>
                 </template> -->
             </FileUpload>
+            <div v-for="file of files">{{ file }}</div>
         </div>
     </div>
 
