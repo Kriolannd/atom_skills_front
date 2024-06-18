@@ -57,7 +57,7 @@ onMounted(() => {
             <InputText v-model="filterModel.value" type="text" @input="filterCallback()" />
         </template>
     </Column>
-    <Button id="b1" icon="pi pi-refresh" rounded raised @click="router.push('add')" />
+    <Button id="b1" icon="pi pi-arrow-left" rounded raised @click="router.push('add')" />
   </DataTable>
 </template>
 
@@ -69,7 +69,7 @@ onMounted(() => {
         z-index: 1;
     }
 
-    .p-datatable, #d1 {
+    #d1 {
         height: 100vh;
         width: 100%;
     }

@@ -51,6 +51,12 @@ onMounted(() => {
 //     filteredCardData()
 // });
 
+const filteredItems = (): ITopicCard[] => {
+      return cardData.value.filter(topic => {
+        return topic.title.toLowerCase().includes(searchText.toLowerCase());
+    });
+}
+
 const filteredCardData = (): void => {
     filterCards = cardData.value.filter(item => {
         return JSON.stringify(item.title).toLowerCase().includes(searchText.toLowerCase())
@@ -67,21 +73,21 @@ const filteredCardData = (): void => {
             <div class="card flex justify-center flex-wrap gap-4">
                 <Button label="Все материалы" severity="success" raised @click="redirectTo('lessons')" />
                 <Button label="Все задания" severity="success" raised @click="redirectTo('tasks')" />
-                <Button icon="pi pi-refresh" rounded raised @click="router.push('login')" />
+                <Button icon="pi pi-arrow-left" rounded raised @click="router.push('login')" />
             </div>
             <div class="flex justify-content-end">
                 <IconField iconPosition="left">
                     <InputIcon>
                         <i class="pi pi-search" />
                     </InputIcon>
-                    <InputText placeholder="Keyword Search" v-model="searchText" @input="filteredCardData()" />
+                    <InputText placeholder="Keyword Search" v-model="searchText" />
                 </IconField>
             </div>
         </div>
     </div>
 
     <div class="container">
-        <Card style="width: 25rem; overflow: hidden" v-for="data in cardData">
+        <Card style="width: 25rem; overflow: hidden" v-for="data in filteredItems()">
             <template #title>{{ data.title }}</template>
             <template #content>
                 <p class="m-0">
@@ -104,6 +110,7 @@ const filteredCardData = (): void => {
         display: flex;
         flex-direction: column;
         width: 100%;
+        height: 100vh;
     }
 
     .container {
@@ -111,7 +118,7 @@ const filteredCardData = (): void => {
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 20px;
     max-height: 100vh;
-    margin-top: 15vh;
+    margin-top: 10vh;
     }
 
     .add-container {
@@ -120,6 +127,7 @@ const filteredCardData = (): void => {
     position: fixed;
     top: 0;
     width: 100%;
+    margin-left: -1%;
     }
 
     .right-side {
