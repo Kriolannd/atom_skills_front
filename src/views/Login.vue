@@ -21,7 +21,7 @@ const loginRequest = () => {
     response => {
       console.log(response)
       localStorage.setItem("token", response.data.token);
-      router.push("/primary")
+      router.push("/add")
     },
     error => {
       console.log(error)

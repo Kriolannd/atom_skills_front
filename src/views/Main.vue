@@ -446,11 +446,11 @@ const getSeverity = (status: any) => {
 
 <style>
 
-  .right-side,
+  /* .right-side,
   .left-side {
     display: flex;
-    /* flex: 1 1 1; */
-  }
+    flex: 1 1 1;
+  } */
 
   .under-side {
     flex: 100%;
@@ -462,14 +462,14 @@ const getSeverity = (status: any) => {
     margin-bottom: 1rem;
   }
 
-  .right-side {
+  /* .right-side {
     background-color: lightgrey;
     border-radius: 10px;
     padding: 10px;
     margin-right: 10px;
     flex: 1 1 0;
     justify-content: space-around;
-  }
+  } */
 
   .left-side {
     background-color: lightblue;
@@ -480,12 +480,6 @@ const getSeverity = (status: any) => {
 
   .main-ul {
     flex-direction: column;
-  }
-
-  .main-container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
   }
 
   /* body {

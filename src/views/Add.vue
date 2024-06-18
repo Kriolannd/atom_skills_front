@@ -3,13 +3,13 @@ import { ref, onMounted } from "vue";
 import Card from 'primevue/card';
 import Button from "primevue/button";
 import type { ITopicCard } from '@/interfaces/submit';
-import { useRouter, type Router } from 'vue-router';
-import Menubar from 'primevue/menubar';
+import { useRouter } from 'vue-router';
 import InputText from 'primevue/inputtext';
-import { FilterMatchMode } from "primevue/api";
 import { getAllTopics } from "../services/topicService"
+import InputIcon from 'primevue/inputicon';
+import IconField from 'primevue/iconfield';
 
-const cardData = ref<ICardData[]>([]);
+const cardData = ref<ITopicCard[]>([]);
 
 const router = useRouter();
 
@@ -21,71 +21,24 @@ const redirectToTask = (code: string): void => {
     }
 }
 
-const filters = {
-    global: { value: "" }
-};
-
-const items = ref([
-    {
-        label: 'Home',
-        icon: 'pi pi-home'
-    },
-    {
-        label: 'Features',
-        icon: 'pi pi-star'
-    },
-    {
-        label: 'Projects',
-        icon: 'pi pi-search',
-        items: [
-            {
-                label: 'Components',
-                icon: 'pi pi-bolt'
-            },
-            {
-                label: 'Blocks',
-                icon: 'pi pi-server'
-            },
-            {
-                label: 'UI Kit',
-                icon: 'pi pi-pencil'
-            },
-            {
-                label: 'Templates',
-                icon: 'pi pi-palette',
-                items: [
-                    {
-                        label: 'Apollo',
-                        icon: 'pi pi-palette'
-                    },
-                    {
-                        label: 'Ultima',
-                        icon: 'pi pi-palette'
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        label: 'Contact',
-        icon: 'pi pi-envelope'
+const redirectTo = (path: string): void => {
+    try {
+        router.push({name: path}); 
+    } catch (error) {
+        console.error(error);
     }
-]);
+}
 
-let searchText = "";
+let searchText = " ";
 
 let filterCards: ITopicCard[] = []
-
-const filteredCardData = (): ITopicCard[] => {
-    filterCards = cardData.value.filter(card => card.title.toLowerCase().includes(searchText.toLowerCase()))
-    return filterCards
-}
 
 onMounted(() => {
     getAllTopics().then(response => {
         console.log(response.data)
         cardData.value = response.data
     })
+    filteredCardData()
 })
  
 
@@ -98,20 +51,38 @@ onMounted(() => {
 //     filteredCardData()
 // });
 
+const filteredCardData = (): void => {
+    filterCards = cardData.value.filter(item => {
+        return JSON.stringify(item.title).toLowerCase().includes(searchText.toLowerCase())
+    })
+}
+
+
 </script>
 
 <template>
+<div class="add-add-container">
+    <div class="add-container">
+        <div class="right-side">
+            <div class="card flex justify-center flex-wrap gap-4">
+                <Button label="Все материалы" severity="success" raised @click="redirectTo('lessons')" />
+                <Button label="Все задания" severity="success" raised @click="redirectTo('tasks')" />
+                <Button icon="pi pi-refresh" rounded raised @click="router.push('login')" />
+            </div>
+            <div class="flex justify-content-end">
+                <IconField iconPosition="left">
+                    <InputIcon>
+                        <i class="pi pi-search" />
+                    </InputIcon>
+                    <InputText placeholder="Keyword Search" v-model="searchText" @input="filteredCardData()" />
+                </IconField>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
-        <!-- <Card style="width: 25rem; overflow: hidden" v-for="data in filteredCardData">
-
-        </Card> -->
-
-        <Card style="width: 25rem; overflow: hidden" v-for="data of cardData">
-            <!-- <template #header>
-                <img alt="user header" class="img" :src="data.image" />
-            </template> -->
+        <Card style="width: 25rem; overflow: hidden" v-for="data in cardData">
             <template #title>{{ data.title }}</template>
-            <!-- <template #subtitle> {{ data.subtitle }}</template> -->
             <template #content>
                 <p class="m-0">
                     {{ data.description }}
@@ -119,15 +90,22 @@ onMounted(() => {
             </template>
             <template #footer>
                 <div class="flex gap-4 mt-1">
-                    <Button label="Cancel" severity="secondary" outlined class="w-full" />
-                    <Button label="Save" class="w-full" @click="redirectToTask(data.code)" />
+                    <Button label="Cancel" severity="secondary" outlined class="w-full" @click="router.push('tasksandmaterials')" />
+                    <Button label="Задание" class="w-full" @click="redirectToTask(data.code)" />
                 </div>
             </template>
         </Card>
     </div>
+</div>
 </template>
 
 <style>
+    .add-add-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
     .container {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
@@ -136,75 +114,23 @@ onMounted(() => {
     margin-top: 15vh;
     }
 
-    .p-card-title:hover {
-        background-color: antiquewhite;
-    }
-
-    /* .card { */
-    /* width: 100%;
-    max-width: 25rem;
-    overflow: hidden;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); */
-    /* background-color: #333;
-    color: #fff; */
-    /* padding: 10px;
-    position: fixed;
-    top: 0;
-    width: 100%; */
-    /* margin-bottom: -200px; */
-    /* } */
-    
-    .add-card {
-    padding: 10px;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    }
-
-    .img {
-    width: 100%;
-    height: auto;
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
-    max-height: 100px;
-    }
-
-    .card-content {
-    padding: 20px;
-    }
-
-    .card-title {
-    font-size: 1.5rem;
-    font-weight: bold;
-    }
-
-    .card-subtitle {
-    font-size: 1rem;
-    color: #555;
-    }
-
-    .card-text {
-    margin-top: 10px;
-    }
-
-    .card-footer {
+    .add-container {
     display: flex;
-    justify-content: space-between;
-    margin-top: 20px;
+    flex-direction: row;
+    position: fixed;
+    top: 0;
+    width: 100%;
     }
 
-    .button {
-    flex: 1;
-    }
-
-    .button-secondary {
-    background-color: #f1f1f1;
-    }
-
-    .button-primary {
-    background-color: #007bff;
-    color: #fff;
+    .right-side {
+    width: 100%;
+    display: flex;
+    background-color: lightgrey;
+    border-radius: 10px;
+    padding: 10px;
+    margin-right: 10px;
+    flex: 1 1 0;
+    justify-content: center;
     }
 
     @media screen and (max-width: 768px) {

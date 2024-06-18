@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import ScrollPanel from 'primevue/scrollpanel';
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import Card from 'primevue/card';
 import DataView from 'primevue/dataview';
 import { marked } from 'marked';
@@ -9,8 +10,17 @@ import { getTask } from '@/services/taskService';
 import type { ITask } from '@/interfaces/submit';
 import eventBus from "@/utilities/eventBus";
 import { Severity } from "@/utilities/severityEnum";
+import DataTable from 'primevue/datatable';
+import Column from 'primevue/column';
+import FileUpload from 'primevue/fileupload';
+import Button from 'primevue/button';
+import Badge from 'primevue/badge';
+import Panel from 'primevue/panel';
+import { usePrimeVue } from 'primevue/config';
 
-const markdown = marked("Практическое занятие: технология изготовления сварного узла ручной дуговой сваркой<br><br><br><br>**Тема занятия:** Технология изготовления сварного узла ручной дуговой сваркой.<br><br><br><br>**Цели занятия:**<br><br><br><br>- Закрепить знания и привить навыки в разработке технологии изготовления сварного узла ручной дуговой сваркой.<br><br>- Научиться работать с технической и нормативной литературой.<br><br>- Выполнить сварку стыковых соединений в нижнем положении пластин в соответствии с ГОСТом ручной дуговой сваркой;<br><br>## Необходимые инструменты, защитные средства, оборудование, механизмы.<br><br>- Две пластины с V-образной разделкой кромок размерами, мм: 600 x 200 x 8. <br><br>- Калькулятор. <br><br>- Чертежные приспособления.<br><br>- Гост 5264 – 80. Ручная дуговая сварка. С<br><br>## Знания и навыки, необходимые для достижения результата.<br><br>Знать технологию и уметь выполнять сварку стыковых соединений ручной дуговой сваркой<br><br>## Задание<br><br>1. ## Выбор и характеристика материала конструкции. <br><br>1. ## Выбор сварочных материалов и их характеристика.<br><br>1. ## Расчет и выбор параметров режима сварки. <br><br>1. ## Выбор и характеристика источника питания сварочной дуги.<br><br>1. ## Схема поста для ручной дуговой сварки и его описание.<br><br>1. Выполнение сварки стыковых соединений в соответствии с ГОСТом ручной дуговой сваркой<br><br><br><br>Методика выполнения<br><br>##<br><br>## Ход работы<br><br><br><br>Методика выполнения <br><br><br><br>1. Выбор и характеристика материала конструкции исходя их назначения, условий работы, технических требований, выбирается материал для изготовления конструкции. <br><br><br><br>Указывается марка материала; ГОСТ на материал; приводится химический состав и механические свойства. <br><br><br><br>Исходя их назначения, условий работы, технических требований, выбирается материал для изготовления конструкции. Указывается марка материала; ГОСТ; приводится химический состав и механические свойства<br><br><br><br>2. Выбор сварочных материалов и их характеристика При ручной дуговой сварке, исходя их химического состава свариваемого металла, требований, предъявляемых к свариваемой конструкции, условий ее работы, определяется тип и марка электродов. <br><br><br><br>Широкое применение получили электроды типа Э46, марки: УОНИ-13/45А, АНО – 4, АНО – 21 и др. Они дают высокое качество металла шва и применяются для сварки ответственных швов из конструкционных сталей. Цифры после черты обозначают получаемый предел прочности металла шва (кгс/мм2 ). Сварку можно производить при любом положении шва, но только на постоянном токе обратной полярности. Эти электроды применяют в заводских и монтажных условиях. <br><br><br><br>3. Расчет и выбор параметров режима сварки <br><br><br><br>3.1 Режимом сварки называют совокупность характеристик сварочного процесса, обеспечивающих получение сварных соединений. При ручной дуговой сварке характеристиками являются: диаметр электрода (dэл), сила сварочного тока (Iсв), скорость перемещения электрода вдоль шва (Vсв), напряжение на дуге (Uд), род тока, полярность тока и т.д. <br><br><br><br>3.2 Расчет режимов сварки ведется в последовательности. <br><br><br><br>Шов выполняется по ГОСТ 5264-80-С17<br><br><br><br>1) Конструктивные элементы подготовки кромок и размеры шва на рисунке 2.28. <br><br><br><br>2) Площадь поперечного сечения наплавленного металла, мм кв. <br><br><br><br>Fн = 0,75∙ e∙q + S∙b + h 2 ∙ tgα,<br><br><br><br>где h – глубина проплавления, мм, h = S – с , (2.12) <br><br><br><br>где с – притупление при разделке кромок.<br><br><br><br>![Рисунок 2.28](img_test0002_2_28.jpg)<br><br><br><br>3) Диаметр электрода, dэл, мм, Диаметр электрода для стыкового соединения подбирают по толщине металла по таблице 2.10. <br><br><br><br>![Таблица 2.10](img_test0002_t_2_10.jpg)<br><br><br><br>4) Величина сварочного тока, <br><br><br><br>![Формула 2.13](img_test0002_f_2_13.jpg)<br><br><br><br>где j – допускаемая плотность тока , А/мм2 ; j – выбирается из таблицы 2.11. <br><br><br><br>![Таблица 2.11](img_test0002_t_2_11.jpg)<br><br>### Этапы выполнения работы.<br><br>1. Обучающийся подготавливает металл под сварку, укладывает пластины на ровную поверхность зачищенными кромками, чтобы не было разностенок. <br><br>   Обучающийся делает прихватки пластин<br><br>1. Обучающийся сваривает стыковое соединение <br><br>1. Обучающийся осуществляет контроль путем внешнего осмотра.<br><br><br><br>### Результат выполнения задания.<br><br>1. Загрузка результатов работы в систему работы.<br><br>1. Сдача рабочего места.<br><br><br><br>**Результат работы загружается в виде фотографии (не менее одной) с комментарием (опционально) к ней. Комментарий по работе может содержать:**<br><br><br><br>1. Номер работы, тему, цель работы, исходные материалы и данные.<br><br>1. Используемую литературу и другие источники.<br><br>1. Марку сварочного оборудования и материалов.<br><br>1. Технологию выполнения работы.<br><br>1. Выявленные дефекты, их причины и способы устранения.<br><br>1. Вывод по работе.")
+
+const router = useRouter();
+
 
 onMounted(() => {
     ProductService.getProductsSmall().then((data) => (products.value = data.slice(0, 3)));
@@ -19,7 +29,6 @@ onMounted(() => {
 
 const products = ref();
 
-let id = "tsk0002"
 
 let someTaskData = ref<ITask>({
     code: "",
@@ -44,11 +53,15 @@ let someTaskData = ref<ITask>({
 });
 
 const someTaskRequest = () => {
-  getTask(id).then(
+  let routerParam = router.currentRoute.value.params.code
+  getTask(Array.isArray(routerParam) ? routerParam[0] : routerParam).then(
     response => {
-      console.log(response)
-      someTaskData = response.data;
-      console.log(someTaskData);
+    //   console.log(response)
+      someTaskData.value = response.data;
+    //   console.log(response.data);
+      originalStr = response.data.content;
+        console.log(originalStr)
+        console.log(originalStr.replaceAll('<br>', '\n'))
     }
   ).catch(
     error => {
@@ -58,18 +71,46 @@ const someTaskRequest = () => {
   )
 }
 
+const selectedLesson = ref();
+const onRowSelect = (event) => {
+    router.push({name: "lesson", params: {code: selectedLesson.value.code}})
+};
+
+const $primevue = usePrimeVue();
+const formatSize = (bytes) => {
+    const k = 1024;
+    const dm = 3;
+    const sizes = $primevue.config.locale.fileSizeTypes;
+
+    if (bytes === 0) {
+        return `0 ${sizes[0]}`;
+    }
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    const formattedSize = parseFloat((bytes / Math.pow(k, i)).toFixed(dm));
+
+    return `${formattedSize} ${sizes[i]}`;
+};
+
+const files = ref([])
+const onAdvancedUpload = (event) => {
+    console.log(event)
+    files.value = event.files
+    console.log(files)
+};
+
 </script>
 
 <template>
     <div class="task-container">
         <div class="sidebar">
         <div class="lesson-sidebar">
-            <DataView dataKey="value" :value="products" paginator :rows="3">
+            <!-- <DataView dataKey="value" :value="someTaskData.lessons" paginator :rows="3">
                 <template #header><p class="lesson-sidebar-header">Учебные материалы</p></template>
                 <template #list="slotProps">
                     <div class="flex flex-col">
                         <div v-for="(item, index) in slotProps.items" :key="index">
-                            <div class="flex flex-col sm:flex-row sm:items-center p-6 gap-4" :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }">
+                            <div class="flex flex-col sm:flex-row sm:items-center p-6 gap-4" :class="{ 'border-t border-surface-200 dark:border-surface-700': index !== 0 }" selected>
                                 <div class="flex flex-col md:flex-row justify-between md:items-center flex-1 gap-6">
                                     <div class="flex flex-row md:flex-col justify-between items-start gap-2">
                                         <div>
@@ -81,7 +122,14 @@ const someTaskRequest = () => {
                         </div>
                     </div>
                 </template>
-            </DataView>
+            </DataView> -->
+            <DataTable v-model:selection="selectedLesson" :value="someTaskData.lessons" selectionMode="single" paginator :rows="5" dataKey="code" @rowSelect="onRowSelect">
+                <Column field="title" header="Учебные материалы к заданию" style="min-width: 12rem">
+                    <template #body="{ data }">
+                        {{ data.title }}
+                    </template>
+                </Column>
+            </DataTable>
         </div>
         <div class="result-sidebar">
             <Panel>
@@ -98,23 +146,75 @@ const someTaskRequest = () => {
         </div>
         </div>
         <div class="main-c">
-        <div class="title-card">
-            <Card style="overflow: hidden">
-                <template #title>{{ someTaskData.title }}</template>
-                <template #content></template>
-            </Card>
-        </div>
-        <div class="article-card">
-            <ScrollPanel style="width: 100%; height: 100%">
-                <div v-html="markdown"></div>
-            </ScrollPanel>
-        </div>
+            <div class="title-card">
+                <Card style="overflow: hidden">
+                    <template #title>{{ someTaskData.title }}</template>
+                    <template #content></template>
+                </Card>
+            </div>
+            <div class="article-card">
+                <ScrollPanel style="width: 100%; height: 100%">
+                    <div id="md" v-html="marked.parse(someTaskData.content.replaceAll('<br>', '\n'))"></div>
+                    <!-- <div id="md" v-html="marked.parse(originalStr)"></div> -->
+                </ScrollPanel>
+            </div>
+            <FileUpload name="demo[]" url="/api/upload" @select="onAdvancedUpload($event)" :multiple="true" accept="image/*" :maxFileSize="1000000">
+                <template #empty>
+                    <span>Drag and drop files to here to upload.</span>
+                </template>
+                <!-- <template #content="{ files, uploadedFiles, removeUploadedFileCallback, removeFileCallback }">
+                    <div class="flex flex-col gap-8 pt-4">
+                        <div v-if="files.length > 0">
+                            <h5>Pending</h5>
+                            <div class="flex flex-wrap gap-4">
+                                <div v-for="(file, index) of files" :key="file.name + file.type + file.size" class="p-8 rounded-border flex flex-col border border-surface items-center gap-4">
+                                    <div>
+                                        <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
+                                    </div>
+                                    <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name }}</span>
+                                    <div>{{ formatSize(file.size) }}</div>
+                                    <Badge value="Pending" severity="warn" />
+                                    <Button icon="pi pi-times" outlined rounded severity="danger" />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div v-if="uploadedFiles.length > 0">
+                            <h5>Completed</h5>
+                            <div class="flex flex-wrap gap-4">
+                                <div v-for="(file, index) of uploadedFiles" :key="file.name + file.type + file.size" class="p-8 rounded-border flex flex-col border border-surface items-center gap-4">
+                                    <div>
+                                        <img role="presentation" :alt="file.name" :src="file.objectURL" width="100" height="50" />
+                                    </div>
+                                    <span class="font-semibold text-ellipsis max-w-60 whitespace-nowrap overflow-hidden">{{ file.name }}</span>
+                                    <div>{{ formatSize(file.size) }}</div>
+                                    <Badge value="Completed" class="mt-4" severity="success" />
+                                    <Button icon="pi pi-times" @click="removeUploadedFileCallback(index)" outlined rounded severity="danger" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template> -->
+            </FileUpload>
         </div>
     </div>
 
 </template>
 
 <style>
+
+.task-button-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    /* display: flex;
+    background-color: lightgrey;
+    border-radius: 10px;
+    padding: 10px;
+    margin-right: 10px;
+    flex: 1 1 0;
+    justify-content: space-around; */
+}
 .task-container {
     display: flex;
     flex-direction: row;
@@ -137,18 +237,22 @@ const someTaskRequest = () => {
 
 .title-card {
     /* width: 140vh; */
-    height: 25vh;
+    /* height: 25vh; */
     /* max-width: 75%; */
     /* position: fixed; */
     /* top: 30px;
     right: 20px; */
     /* flex: 0 0 70% */
+    margin-bottom: 10px;
+    border: 2px solid rgb(223, 226, 226);
+    border-radius: 10px;
 }
 
 .main-c {
     display: flex;
     flex-direction: column;
     /* max-width: 75%; */
+    width: 70vw
 }
 
 .p-card {
@@ -191,6 +295,7 @@ const someTaskRequest = () => {
     display: flex;
     flex-direction: column;
     max-width: fit-content;
+    width: 30vw;
 }
 
 .lesson-sidebar-header {

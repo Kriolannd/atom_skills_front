@@ -1,42 +1,19 @@
 <script lang="ts" setup>
-import IconField from 'primevue/iconfield';
-import InputIcon from 'primevue/inputicon';
 import InputText from 'primevue/inputtext';
-import AutoComplete from 'primevue/autocomplete';
-import Dropdown from 'primevue/dropdown';
-import MultiSelect from 'primevue/multiselect';
-import TriStateCheckbox from 'primevue/tristatecheckbox';
-import Tag from 'primevue/tag';
-import Paginator from 'primevue/paginator';
-
+import InputNumber from 'primevue/inputnumber';
 
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import ColumnGroup from 'primevue/columngroup';
-import Row from 'primevue/row';
-import { FilterMatchMode } from 'primevue/api';
+import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import { ref, onMounted } from 'vue';
-import { CustomerService } from '@/services/CustomerService';
 
-import {PrimeIcons} from "primevue/api";
-import Dialog from "primevue/dialog";
-import Calendar from "primevue/calendar";
-import InputNumber from "primevue/inputnumber";
 import {useRouter} from "vue-router";
-import type { ISomeData, ISomeEntity } from "@/interfaces/submit";
-import { SomeEnum } from "@/utilities/someEnum";
-import {submitRequest} from "@/utilities/submitRequest";
-import eventBus from "@/utilities/eventBus";
-import { Severity } from "@/utilities/severityEnum";
-import Button from "primevue/button";
-import { redirect } from "@/utilities/redirect";
-import FileUpload from 'primevue/fileupload';
-import { useToast } from "primevue/usetoast";
 import Rating from 'primevue/rating';
-import { getAll, saveEntityForm } from "../services/someEntityService"
 import { getAllTasks } from "../services/taskService"
 
 const toast = useToast();
+
+const router = useRouter()
 
 const onUpload = () => {
     toast.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000 });
@@ -106,24 +83,22 @@ const someEntityRequest = () => {
 
 const tasks = ref();
 const filters = ref({
-    title: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    difficulty: { value: null, matchMode: FilterMatchMode.GREATER_THAN },
-    time: { value: null, matchMode: FilterMatchMode.GREATER_THAN }
+    title: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    difficulty: { value: null, matchMode: FilterMatchMode.EQUALS },
+    time: { value: null, matchMode: FilterMatchMode.EQUALS },
+    // difficulty: {operator: FilterOperator.AND, constraints: [{value: null, matchMode: FilterMatchMode.GREATER_THAN}, {value: null, matchMode: FilterMatchMode.LESS_THAN}]},
 });
 
 const loading = ref(true);
 
 const selectedProduct = ref();
-const onRowSelect = (event) => {
+const onRowSelect = () => {
     console.log(selectedProduct)
 };
 
 onMounted(() => {
-    // CustomerService.getCustomersMedium().then((data: any) => {
-    //         customers.value = getCustomers(data);
-    //         loading.value = false;
-    //     });
     getAllTasks().then(response => {
+      console.log(response.data)
       tasks.value = response.data;
       loading.value = false;
     })
@@ -133,7 +108,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <DataTable v-model:selection="selectedProduct" :filters="filters" :value="tasks" selectionMode="single" paginator :rows="5" dataKey="code" filterDisplay="menu" :loading="loading" @rowSelect="onRowSelect" >
+  <DataTable v-model:selection="selectedTask" v-model:filters="filters" :value="tasks" selectionMode="single" paginator :rows="5" dataKey="code" filterDisplay="row" :loading="loading" @rowSelect="onRowSelect" >
     <template #empty> No customers found. </template>
     <template #loading> Loading customers data. Please wait. </template>
     <Column field="title" header="Название" style="min-width: 12rem">
@@ -141,29 +116,36 @@ onMounted(() => {
             {{ data.title }}
         </template>
         <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="text" @input="filterCallback()"  placeholder="Search by name" />
+            <InputText v-model="filterModel.value" type="text" @input="filterCallback()"  />
         </template>
     </Column>
-    <Column field="difficulty" header="Сложность" style="min-width: 12rem">
+    <Column field="difficulty" header="Сложность" dataType="numeric" style="min-width: 12rem">
         <template #body="{ data }">
           <Rating :modelValue="data.difficulty" readonly :cancel="false" />
         </template>
         <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="number" @input="filterCallback()" class="p-column-filter" placeholder="Search by name" />
+            <InputText v-model="filterModel.value" type="number" @input="filterCallback()" class="p-column-filter" />
         </template>
     </Column>
-    <Column field="time" header="Время на выполнение" style="min-width: 12rem">
+    <Column field="time" header="Время на выполнение" dataType="numeric" style="min-width: 12rem">
         <template #body="{ data }">
-            {{ data.time }}
+            {{ data.time }} мин
         </template>
         <template #filter="{ filterModel, filterCallback }">
-            <InputText v-model="filterModel.value" type="number" @input="filterCallback()" class="p-column-filter" placeholder="Search by name" />
+            <InputText v-model="filterModel.value" type="number" @input="filterCallback()" class="p-column-filter" />
         </template>
     </Column>
+    <Button id="b1" icon="pi pi-refresh" rounded raised @click="router.push('add')" />
   </DataTable>
 </template>
 
 <style>
+  #b1 {
+    position: fixed;
+    top: 0.5vh;
+    right: 1%;
+    z-index: 1;
+  }
 
   .right-side,
   .left-side {

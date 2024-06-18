@@ -31,6 +31,7 @@ export interface ISomeEntity {
 }
 
 export interface ITopicCard {
+    code:string,
     title: string,
     traits: string[],
     description: string
@@ -48,6 +49,38 @@ export interface ITask {
     difficulty: number,
     time: number,
     lessons: [{
+        code: string,
+        title: string,
+        traits: [{
+            code: string,
+            name: string,
+            description: string
+        }]
+    }]
+}
+
+export interface ILesson {
+    code: string,
+    title: string,
+    content: string,
+    traits: [{
+        code: string,
+        name: string,
+        description: string
+    }],
+    supplement: [{
+        title: string,
+        file: string
+    }],
+    description: string,
+    tasks: [{
+        code: string,
+        title: string,
+        difficulty: number,
+        time: number
+    }],
+    author: string,
+    topics: [{
         code: string,
         title: string,
         traits: [{

@@ -1,4 +1,4 @@
-@layer tailwind-base, primevue, tailwind-utilities;
+/* @layer tailwind-base, primevue, tailwind-utilities;
 
 @layer tailwind-base {
     @tailwind base;
@@ -7,7 +7,7 @@
 @layer tailwind-utilities {
     @tailwind components;
     @tailwind utilities;
-    }
+    } */
 
 .img-container {
     /*background-image: url("public/office-supplies.jpg");*/
