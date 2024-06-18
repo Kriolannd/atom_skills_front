@@ -21,7 +21,7 @@ const loginRequest = () => {
     response => {
       console.log(response)
       localStorage.setItem("token", response.data.token);
-      router.push("/add")
+      router.push("/topics")
     },
     error => {
       console.log(error)
@@ -34,33 +34,33 @@ const loginRequest = () => {
 
 <template>
   <div class="shadow-2xl rounded-lg p-5 max-w-[25rem] w-full">
-    <p class="text-4xl mb-4 text-center text-green-800">Sign in</p>
+    <p class="text-4xl mb-4 text-center text-green-800">Авторизация</p>
     <form @submit.prevent>
       <div class="flex flex-col gap-4 mb-4">
         <div class="flex flex-col gap-1">
           <label
               class="text-xs text-green-800"
               for="username">
-            Username
+            Логин
           </label>
           <InputText
               id="username"
               v-model="loginformData.username"
               class="text-sm"
-              placeholder="Enter your username"
+              placeholder="Введите логин"
               required/>
         </div>
         <div class="flex flex-col gap-1">
           <label
               class="text-xs text-green-800"
               for="password">
-            Password
+            Пароль
           </label>
           <Password
               id="password"
               v-model="loginformData.password"
               input-class="grow pr-0 text-sm"
-              placeholder="Enter your password"
+              placeholder="Введите пароль"
               required
               toggle-mask
               :feedback="false"/>
@@ -70,13 +70,13 @@ const loginRequest = () => {
             class="flex justify-center items-center"
             type="submit"
             @click="loginRequest">
-          Sign in
+          Войти
         </Button>
       </div>
-      <span class="text-sm">Not a member?</span>
+      <span class="text-sm">Еще не зарегистрированы?</span>
       <Button
           class="pb-0"
-          label="Register now"
+          label="Зарегистрироваться сейчас"
           link
           size="small"
           @click="router.push('/register')"/>

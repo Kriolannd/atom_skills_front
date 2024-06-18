@@ -9,7 +9,7 @@ const router = useRouter();
 const { proxy } = getCurrentInstance()!;
 
 onMounted(() => {
-  router.push("/add")
+  router.push("/login")
   if (proxy) {
     eventBus.on('toast', showToast);
   }
