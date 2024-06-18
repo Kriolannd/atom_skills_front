@@ -1,19 +1,91 @@
 <script lang="ts" setup>
 import InputText from 'primevue/inputtext';
-import InputNumber from 'primevue/inputnumber';
-import Button from 'primevue/button';
 
 import DataTable from 'primevue/datatable';
 import Column from 'primevue/column';
-import { FilterMatchMode, FilterOperator } from 'primevue/api';
+import { FilterMatchMode, FilterOperator, PrimeIcons } from 'primevue/api';
 import { ref, onMounted } from 'vue';
+import Button from 'primevue/button';
 
 import {useRouter} from "vue-router";
 import Rating from 'primevue/rating';
 import { getAllTasks } from "../services/taskService"
+import type { ISomeData, ISomeEntity } from '@/interfaces/submit';
+import { SomeEnum } from '@/utilities/someEnum';
+import { useToast } from 'primevue/usetoast';
+import { getAll, saveEntityForm } from '@/services/someEntityService';
+import eventBus from '@/utilities/eventBus';
+import { Severity } from '@/utilities/severityEnum';
 
+const toast = useToast();
 
 const router = useRouter()
+
+const onUpload = () => {
+    toast.add({ severity: 'info', summary: 'Success', detail: 'File Uploaded', life: 3000 });
+    console.log(fileupload);
+};
+
+const fileupload = ref();
+
+const displayDialog = ref(false);
+
+interface MenuItem {
+  label: string;
+  icon: string;
+}
+
+const someData = ref<ISomeData>({
+    text: "",
+    number: 0,
+    date: new Date(),
+    someEnum: SomeEnum.FIRST,
+    file: ""
+});
+
+let someEntityData = ref<ISomeEntity[]>([{
+    id: 0,
+    text: "",
+    number: 0,
+    date: new Date(),
+    someEnum: SomeEnum.FIRST,
+    file: ""
+}]);
+
+
+const itemss = ref<MenuItem[]>([
+    { label: 'Send Data', icon: PrimeIcons.SEND },
+]);
+
+const someDataRequest = () => {
+  saveEntityForm({ ...someData.value, file: fileupload.value.files[0] }).then(
+    response => {
+      console.log(response);
+    }
+  ).catch(
+    error => {
+      console.log(error);
+      eventBus.emit('toast', { severity: Severity.ERROR, summary: 'Ошибка отправки данных', detail: 'Неправильно заполнены поля', life: 3000 });
+    }
+  )
+}
+
+const someEntityRequest = () => {
+  getAll().then(
+    response => {
+      console.log(response)
+      someEntityData = response.data;
+      console.log(someEntityData);
+    }
+  ).catch(
+    error => {
+      console.log(error)
+      eventBus.emit('toast', { severity: Severity.ERROR, summary: 'Ошибка получения данных', detail: 'Неправильно ролучены данные', life: 3000 });
+    }
+  )
+}
+
+
 
 const tasks = ref();
 const filters = ref({
@@ -27,9 +99,9 @@ const loading = ref(true);
 
 const selectedTask = ref();
 const onRowSelect = () => {
-    console.log(selectedTask)
-    router.push({name: "task", params: { code: selectedTask.value.code }})
+    router.push({name: "task", params: {code: selectedTask.value.code}})
 };
+
 
 onMounted(() => {
     getAllTasks().then(response => {
@@ -39,13 +111,12 @@ onMounted(() => {
     })
 });
 
-
 </script>
 
 <template>
-  <DataTable v-model:selection="selectedTask" v-model:filters="filters" :value="tasks" selectionMode="single" paginator :rows="5" dataKey="code" filterDisplay="row" :loading="loading" @rowSelect="onRowSelect" >
-    <template #empty> No customers found. </template>
-    <template #loading> Loading customers data. Please wait. </template>
+  <DataTable id="d1" v-model:selection="selectedTask" v-model:filters="filters" :value="tasks" selectionMode="single" paginator :rows="5" dataKey="code" filterDisplay="row" :loading="loading" @rowSelect="onRowSelect" >
+    <template #empty> Не найдено заданий. </template>
+    <template #loading> Загруза заданий. Пожалуйста подождите. </template>
     <Column field="title" header="Название" style="min-width: 12rem">
         <template #body="{ data }">
             {{ data.title }}
@@ -70,11 +141,16 @@ onMounted(() => {
             <InputText v-model="filterModel.value" type="number" @input="filterCallback()" class="p-column-filter" />
         </template>
     </Column>
-    <Button id="b1" icon="pi pi-refresh" rounded raised @click="router.push('add')" />
+    <Button id="b1" icon="pi pi-arrow-left" rounded raised @click="router.push('add')" />
   </DataTable>
 </template>
 
 <style>
+  #d1 {
+    height: 100vh;
+    width: 100%;
+  }
+
   #b1 {
     position: fixed;
     top: 0.5vh;

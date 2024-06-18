@@ -67,7 +67,7 @@ onMounted(() => {
                     <template #header>
                         <div class="flex flex-wrap items-center justify-between gap-2">
                             <span class="text-xl font-bold">Учебные материалы</span>
-                            <Button icon="pi pi-refresh" rounded raised @click="router.push('add')" />
+                            <Button icon="pi pi-arrow-left" rounded raised @click="router.push('add')" />
                         </div>
                     </template>
                     <template #empty> Учебных материалов не найдено. </template>
