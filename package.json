@@ -15,10 +15,12 @@
     "@vue/compiler-sfc": "^3.4.27",
     "axios": "^1.7.2",
     "file-saver": "^2.0.5",
+    "konva": "^9.3.11",
     "marked": "^13.0.0",
     "primeicons": "^7.0.0",
     "primevue": "^3.52.0",
     "vue": "^3.2.26",
+    "vue-konva": "^3.0.2",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {

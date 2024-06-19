@@ -11,6 +11,7 @@ import Task from '@/views/Task.vue'
 import Tasks from '@/views/Tasks.vue'
 import Lessons from '@/views/Lessons.vue'
 import Lesson from '@/views/Lesson.vue'
+import Results from '@/views/Results.vue';
 
 const router: Router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -74,6 +75,11 @@ const router: Router = createRouter({
             path: '/lessons',
             name: 'lessons',
             component: Lessons
+        },
+        {
+            path: '/results',
+            name: 'results',
+            component: Results
         }
     ]
 })
