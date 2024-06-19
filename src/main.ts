@@ -8,6 +8,7 @@ import 'primeicons/primeicons.css'
 import 'primevue/resources/primevue.min.css';
 import 'primevue/resources/themes/aura-light-green/theme.css'
 import axios from "axios";
+import VueKonva from 'vue-konva';
 
 axios.defaults.baseURL = "http://localhost:8080"
 axios.interceptors.request.use(
@@ -28,4 +29,5 @@ const app = createApp(App)
 app.use(router)
 app.use(PrimeVue)
 app.use(ToastService)
+app.use(VueKonva)
 app.mount('#app')
